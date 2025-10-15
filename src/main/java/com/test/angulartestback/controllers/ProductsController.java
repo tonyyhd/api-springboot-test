@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.service.annotation.GetExchange;
 
@@ -35,9 +36,9 @@ public class ProductsController {
 
     }
 
-    @GetMapping("producto/{id}")
+    @GetMapping("producto")
     public ResponseEntity<Producto> getProduct(
-        @PathVariable int id)
+        @RequestParam int id)
         {
             Producto producto = this.productService.getProduct(id);
 
@@ -66,39 +67,36 @@ public class ProductsController {
                 }
         }
 
-    @PutMapping("actualizar/producto/{id}")
-    public ResponseEntity<Producto> updateProduct(
-        @PathVariable int id,
-        @RequestBody Producto productoRequest)
-        {
-            
-            Producto producto = this.productService.getProduct(id);
-                if(producto != null){
-                    producto.setDescripcion(productoRequest.getDescripcion());
-                    producto.setPrecio(productoRequest.getPrecio());
-                    producto.setExistencia(productoRequest.getExistencia());
-                    this.productService.saveProduct(producto);
-                    return ResponseEntity.ok(producto);
-                }
-                else {
-                    return ResponseEntity.notFound().build();
-                }
+    @PutMapping("actualizar/producto")
+    public ResponseEntity<Producto> updateProduct(@RequestBody Producto productoRequest) {
+        if (productoRequest.getIdProducto() == 0) {
+            return ResponseEntity.badRequest().build(); // o lanza un error si no viene id
         }
-    
-    @DeleteMapping("borrar/producto/{id}")
-    public ResponseEntity<Producto> removeProduct(
-        @PathVariable int id)
-        {
-            Producto producto = this.productService.getProduct(id);
 
-            if(producto != null){
-                this.productService.deleteProduct(producto);
-                return ResponseEntity.ok(producto);
-            }
-            else {
-                return ResponseEntity.notFound().build();
-            }
+        Producto producto = this.productService.getProduct(productoRequest.getIdProducto());
+
+        if (producto != null) {
+            producto.setDescripcion(productoRequest.getDescripcion());
+            producto.setPrecio(productoRequest.getPrecio());
+            producto.setExistencia(productoRequest.getExistencia());
+            this.productService.saveProduct(producto);
+            return ResponseEntity.ok(producto);
+        } else {
+            return ResponseEntity.notFound().build();
         }
+    }
+    
+    @DeleteMapping("borrar/producto")
+    public ResponseEntity<Producto> removeProduct(@RequestParam int id) {
+        Producto producto = this.productService.getProduct(id);
+
+        if(producto != null){
+            this.productService.deleteProduct(producto);
+            return ResponseEntity.ok(producto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
     
 
 }

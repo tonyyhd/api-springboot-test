@@ -3,6 +3,7 @@ package com.test.angulartestback.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.test.angulartestback.interfaces.ProductsInterface;
@@ -17,7 +18,7 @@ public class ProductService implements ProductsInterface {
 
     @Override
     public List<Producto> getProducts() {
-        return productsRepository.findAll();
+        return productsRepository.findAll(Sort.by(Sort.Direction.ASC, "idProducto"));
     }
 
     @Override
