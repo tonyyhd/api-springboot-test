@@ -67,7 +67,7 @@ public class ProductsController {
     @PutMapping("actualizar/producto")
     public ResponseEntity<Producto> updateProduct(@RequestBody Producto productoRequest) {
         if (productoRequest.getIdProducto() == 0) {
-            return ResponseEntity.badRequest().build(); // o lanza un error si no viene id
+            return ResponseEntity.badRequest().build();
         }
 
         Producto producto = this.productService.getProduct(productoRequest.getIdProducto());
